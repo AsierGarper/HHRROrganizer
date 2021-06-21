@@ -48,7 +48,7 @@ namespace HHRROrganizer.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Id");
+            ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Name");
             return View();
         }
 
