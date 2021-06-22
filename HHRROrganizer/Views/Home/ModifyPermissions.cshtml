@@ -1,0 +1,102 @@
+﻿@model IEnumerable<HHRROrganizer.Models.AppUser>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUser> _userManager
+
+@{
+    ViewData["Title"] = "Modify Permissions";
+}
+
+@{
+    //Check that the user who is browsing is registered thanks to the not null, and if he/she is registered we take his/her id
+    AppUser appUser = await _userManager.GetUserAsync(User);
+    string guid = "";
+
+    if (appUser != null)
+    {
+        guid = appUser.Id;
+    }
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>*@
+            <th>
+                Email
+            </th>
+            <th>
+                Organization Number
+            </th>
+            <th>
+                Rol
+            </th>
+            <th>
+                Edit user
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (AppUser user in Model)
+        {
+            bool isManager = await _userManager.IsInRoleAsync(user, "manager");
+            bool isAdmin = await _userManager.IsInRoleAsync(user, "admin");
+
+            <tr class="employeeInfoRow">
+
+                @*<td>
+                        @Html.DisplayFor(modelItem => user.Id)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => user.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.OrganizationNumber)
+                </td>
+                <td>
+                    @if (isAdmin)
+                    {
+                        <span>Admin</span>
+                    }
+                    else if (isManager)
+                    {
+                        <span>Manager</span>
+                    }
+                    else
+                    {
+                        <span>Guest</span>
+                    }
+
+                </td>
+                <td>
+                    @if (isAdmin)
+                    {
+                        if (guid != string.Empty && guid == user.Id)
+                        {
+                            <p>(Loged user)</p>
+                        }
+                        else
+                        {
+                            <a asp-action="DegradeRole" asp-route-id="@user.Id">Degrade</a> @Html.Raw("|")
+                            <a asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+                        }
+                    }
+                    else if (isManager)
+                    {
+                        <a asp-action="UpgradeRole" asp-route-id="@user.Id">Upgrade</a> @Html.Raw("|")
+                        <a asp-action="DegradeRole" asp-route-id="@user.Id">Degrade</a> @Html.Raw("|")
+                        <a asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+                    }
+                    else
+                    {
+                        <a asp-action="UpgradeRole" asp-route-id="@user.Id">Upgrade</a> @Html.Raw("|")
+                        <a asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

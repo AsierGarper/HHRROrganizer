@@ -18,5 +18,6 @@ namespace HHRROrganizer.Models
         public int NetSalary { get; set; }
         public int DepartmentId { get; set; }
         public Department Department { get; set; }
+
     }
 }

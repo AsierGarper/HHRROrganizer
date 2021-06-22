@@ -65,6 +65,9 @@ namespace HHRROrganizer.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            public bool IsManager { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -83,6 +86,8 @@ namespace HHRROrganizer.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    //When the user registers, we will automatically make him/her register with the role of 'guest'. Then, we will make the administrator the one who can assign the roles to each user.
+                    await _userManager.AddToRoleAsync(user, "guest");
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
