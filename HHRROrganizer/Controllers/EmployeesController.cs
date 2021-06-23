@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HHRROrganizer.Data;
 using HHRROrganizer.Models;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace HHRROrganizer.Controllers
 {
@@ -14,9 +17,14 @@ namespace HHRROrganizer.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public EmployeesController(ApplicationDbContext context)
+        public object Environment { get; private set; }
+        private IWebHostEnvironment _environment;
+
+
+        public EmployeesController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         // GET: Employees
@@ -57,10 +65,11 @@ namespace HHRROrganizer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Picture,StartDate,GrossSalary,NetSalary,DepartmentId")] Employees employees)
+        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Picture,StartDate,GrossSalary,NetSalary,DepartmentId")] Employees employees, List<IFormFile> postedFiles)
         {
             if (ModelState.IsValid)
             {
+                UploadProfilePic(postedFiles, employees);
                 _context.Add(employees);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -155,6 +164,34 @@ namespace HHRROrganizer.Controllers
         private bool EmployeesExists(int id)
         {
             return _context.Employees.Any(e => e.Id == id);
+        }
+
+        //Method to upload a profile picture for Create view of Employers
+        [HttpPost]
+        public IActionResult UploadProfilePic(List<IFormFile> postedFiles, Employees employees)
+        {
+            string wwwPath = this._environment.WebRootPath;
+
+            string path = Path.Combine(wwwPath, "pictures");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+
+            foreach (IFormFile postedFile in postedFiles)
+            {
+                string fileName = Path.GetFileName(postedFile.FileName);
+                employees.Picture = fileName;
+               //FileMode formatea el espacio de memoria, FileStream abre el espacio de memoria
+                using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                {
+                    postedFile.CopyTo(stream);
+                    ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
+                }
+            }
+
+            return View();
         }
     }
 }
