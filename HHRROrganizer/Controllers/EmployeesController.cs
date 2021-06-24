@@ -10,9 +10,11 @@ using HHRROrganizer.Models;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HHRROrganizer.Controllers
 {
+    [Authorize]
     public class EmployeesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -52,8 +54,8 @@ namespace HHRROrganizer.Controllers
 
             return View(employees);
         }
-
         // GET: Employees/Create
+        [Authorize (Roles ="admin") ]
         public IActionResult Create()
         {
             ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Name");
@@ -65,20 +67,31 @@ namespace HHRROrganizer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,Surname,Picture,StartDate,GrossSalary,NetSalary,DepartmentId")] Employees employees, List<IFormFile> postedFiles)
         {
             if (ModelState.IsValid)
             {
-                UploadProfilePic(postedFiles, employees);
-                _context.Add(employees);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var exist = await _context.Employees.Where(e => e.Name == employees.Name && e.Surname == employees.Surname).FirstOrDefaultAsync();
+                if (exist == null)
+                {
+                    _context.Add(employees);
+                    UploadProfilePic(postedFiles, employees);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["msg"] = "Error!";
+                }
+                
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Id", employees.DepartmentId);
+            ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Name", employees.DepartmentId);
             return View(employees);
         }
 
         // GET: Employees/Edit/5
+        [Authorize(Roles = "admin, manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -100,7 +113,8 @@ namespace HHRROrganizer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Picture,StartDate,GrossSalary,NetSalary,DepartmentId")] Employees employees)
+        [Authorize(Roles = "admin, manager")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Picture,StartDate,GrossSalary,NetSalary,DepartmentId")] Employees employees, List<IFormFile> postedFiles)
         {
             if (id != employees.Id)
             {
@@ -111,6 +125,7 @@ namespace HHRROrganizer.Controllers
             {
                 try
                 {
+                    UploadProfilePic(postedFiles, employees);
                     _context.Update(employees);
                     await _context.SaveChangesAsync();
                 }
@@ -127,11 +142,12 @@ namespace HHRROrganizer.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Id", employees.DepartmentId);
+            ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Name", employees.DepartmentId);
             return View(employees);
         }
 
         // GET: Employees/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -153,6 +169,7 @@ namespace HHRROrganizer.Controllers
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var employees = await _context.Employees.FindAsync(id);
@@ -168,7 +185,7 @@ namespace HHRROrganizer.Controllers
 
         //Method to upload a profile picture for Create view of Employers
         [HttpPost]
-        public IActionResult UploadProfilePic(List<IFormFile> postedFiles, Employees employees)
+        public void UploadProfilePic(List<IFormFile> postedFiles, Employees employees)
         {
             string wwwPath = this._environment.WebRootPath;
 
@@ -183,15 +200,13 @@ namespace HHRROrganizer.Controllers
             {
                 string fileName = Path.GetFileName(postedFile.FileName);
                 employees.Picture = fileName;
-               //FileMode formatea el espacio de memoria, FileStream abre el espacio de memoria
+                //FileMode formatea el espacio de memoria, FileStream abre el espacio de memoria
                 using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
                 {
                     postedFile.CopyTo(stream);
                     ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
                 }
             }
-
-            return View();
         }
     }
 }

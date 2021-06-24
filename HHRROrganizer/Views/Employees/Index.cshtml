@@ -18,7 +18,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Picture)
+                Profile Picture
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -27,51 +27,68 @@
                 @Html.DisplayNameFor(model => model.Surname)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartDate)
+                Start Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GrossSalary)
+                Gross Salary
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NetSalary)
+                Net Salary
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Department)
             </th>
+            @if (User.IsInRole("admin")|| User.IsInRole("manager"))
+            {
+                <th>
+                    Manage Employee
+                </th>
+            }
+
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr class="employeeInfoRow">
-                <td>
-                    <img src="~/pictures/@item.Picture" alt="" class="employeePicture" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GrossSalary)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NetSalary)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Department.Name)
-                </td>
+        <tr class="employeeInfoRow">
+            <td>
+                <img src="~/pictures/@item.Picture" alt="" class="employeePicture" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+            <td>
+                @item.StartDate.ToShortDateString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GrossSalary)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NetSalary)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.Name)
+            </td>
+            @if (User.IsInRole("admin"))
+            {
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
-            </tr>
+            }
+            else if (User.IsInRole("manager"))
+            {
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            }
+        </tr>
         }
     </tbody>
 </table>

@@ -70,6 +70,7 @@ namespace HHRROrganizer.Controllers
         }
 
         // GET: Departments/Edit/5
+        [Authorize(Roles = "admin, manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,6 +91,7 @@ namespace HHRROrganizer.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin, manager")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Department department)
         {
             if (id != department.Id)
@@ -121,6 +123,7 @@ namespace HHRROrganizer.Controllers
         }
 
         // GET: Departments/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -141,6 +144,7 @@ namespace HHRROrganizer.Controllers
         // POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var department = await _context.Department.FindAsync(id);
