@@ -55,7 +55,7 @@ namespace HHRROrganizer.Controllers
             return View(employees);
         }
         // GET: Employees/Create
-        [Authorize (Roles ="admin") ]
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Name");
@@ -84,7 +84,7 @@ namespace HHRROrganizer.Controllers
                 {
                     TempData["msg"] = "Error!";
                 }
-                
+
             }
             ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Name", employees.DepartmentId);
             return View(employees);
@@ -208,5 +208,54 @@ namespace HHRROrganizer.Controllers
                 }
             }
         }
+
+        //Employee finder, by name, salary or department
+        [HttpPost]
+        public async Task<IActionResult> Index(string nameSearch, string departmentSearch)
+        {
+
+            //If the user searches by department, leaving the name box empty:
+            if (!String.IsNullOrEmpty(departmentSearch) && String.IsNullOrEmpty(nameSearch))
+            {
+                //var applicationDbContext = _context.Employees.Where(e => e.Department >= departmentSearch);
+                var applicationDbContext = _context.Employees.Include(e => e.Department).Where(e => e.Department.Name.Contains(departmentSearch));
+                //var applicationDbContext = _context.Employees.Where(e => e.Department >= departmentSearch);
+
+                return View(await applicationDbContext.ToListAsync());
+            }
+            //If the user searches by name, leaving the department box empty
+            else if (!String.IsNullOrEmpty(nameSearch) && String.IsNullOrEmpty(departmentSearch))
+            {
+                var applicationDbContext = _context.Employees.Where(e => e.Name.Contains(nameSearch));
+                return View(await applicationDbContext.ToListAsync());
+            }
+            // If none of the fields are empty when the search engine is activated
+            else if (!String.IsNullOrEmpty(nameSearch) && !String.IsNullOrEmpty(departmentSearch))
+            {
+                var applicationDbContext = _context.Employees.Include(e => e.Department).Where(e => e.Name.Contains(nameSearch) && e.Department.Name.Contains(departmentSearch));
+                return View(await applicationDbContext.ToListAsync());
+            }
+            //If both of the fields are empty when the search engine is activated:
+            else
+            {
+                var applicationDbContext = _context.Employees.Include(e => e.Department);
+                return View(await applicationDbContext.ToListAsync());
+            }
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> ModifySalary(List<int> searchList, int userPercentage)
+        {
+            foreach (var id in searchList)
+            {
+                Employees employee = await _context.Employees.Where(e => e.Id == id).FirstOrDefaultAsync();
+                employee.NetSalary = employee.NetSalary + Convert.ToInt32(employee.NetSalary * (Convert.ToDouble(userPercentage) / Convert.ToDouble(100)));
+                employee.GrossSalary = employee.GrossSalary + Convert.ToInt32(employee.GrossSalary * (Convert.ToDouble(userPercentage) / Convert.ToDouble(100)));
+                _context.Update(employee);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

@@ -9,8 +9,30 @@
 @if (User.IsInRole("admin"))
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">Create New Employee</a>
     </p>
+    <div class="forms">
+        <form asp-action="Index">
+            <input placeholder="Search by name.." name="nameSearch" type="text">
+            <input placeholder="Search by department.." name="departmentSearch" type="text">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+        @*The post ModifySalary method is complex, for each search performed in the previous form, we collect the ids of the employees resulting from the search in hidden inputs, to take them later to the BackEnd.
+        UserPercentage collects the value entered by the user, the % of salary to be modified.
+        Then, foreach employee in the filtered model, we create an input of type hidden where to collect the id of each employee resulting from the search, stored in searchlist.*@
+    <form asp-action="ModifySalary" method="post">
+        <input placeholder="-15" name="userPercentage" type="number">
+        @foreach (var item in Model)
+        {
+            <input type="hidden" name="searchList" value="@item.Id" />
+        }
+        <button type="submit">Modify Salary</button>
+        <p class="minExplanation">*Type a percentage (%) to increase/decrease salary in the filtered list:</p>
+        <p class="TextFadeEffect">PRUEBA EJEMPLO</p>
+    </form>
+    </div>
+    
+    
 }
 
 
@@ -38,57 +60,56 @@
             <th>
                 @Html.DisplayNameFor(model => model.Department)
             </th>
-            @if (User.IsInRole("admin")|| User.IsInRole("manager"))
+            @if (User.IsInRole("admin") || User.IsInRole("manager"))
             {
                 <th>
                     Manage Employee
                 </th>
             }
 
-            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-        <tr class="employeeInfoRow">
-            <td>
-                <img src="~/pictures/@item.Picture" alt="" class="employeePicture" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Surname)
-            </td>
-            <td>
-                @item.StartDate.ToShortDateString()
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GrossSalary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NetSalary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
-            </td>
-            @if (User.IsInRole("admin"))
-            {
+            <tr class="employeeInfoRow">
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <img src="~/pictures/@item.Picture" alt="" class="employeePicture" />
                 </td>
-            }
-            else if (User.IsInRole("manager"))
-            {
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @Html.DisplayFor(modelItem => item.Name)
                 </td>
-            }
-        </tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @item.StartDate.ToShortDateString()
+                </td>
+                <td class="TextFadeEffect">
+                    @Html.DisplayFor(modelItem => item.GrossSalary)
+                </td>
+                <td class="TextFadeEffect">
+                    @Html.DisplayFor(modelItem => item.NetSalary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Department.Name)
+                </td>
+                @if (User.IsInRole("admin"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                }
+                else if (User.IsInRole("manager"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+                }
+            </tr>
         }
     </tbody>
 </table>
