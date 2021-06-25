@@ -16,46 +16,55 @@
 }
 
 <h1>Create</h1>
+<div class="createEmployeeHeader">
+    <h4>Employees</h4>
+    <input type="submit" id="randomGeneratorInput" class="btn btn-secondary" value="Fill with random user" />
+</div>
 
-<h4>Employees</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            @*Here, I set a boolean that I change to value=true through js if the Fill Random user button is pressed, this way, the Create method is called in a different way, generating the user in a random way.*@
+            <input type="hidden" name="boolPicture" id="boolPicture" value="False" />
+           
+            <div class="form-group" id="createEmployeeManually">
                 <label asp-for="Picture">Upload a profile picture</label>
                 <input type="file" accept="image/* " class="form-control-file" name="postedFiles">
                 <span asp-validation-for="Picture" class="text-danger"></span>
+                <input type="hidden" name="randomPicture" id="randomPicture" />
             </div>
+            <p class="TextFadeEffect" id="successfullyCreatedEmployee"></p>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" id="randomName" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Surname" class="control-label"></label>
-                <input asp-for="Surname" class="form-control" />
+                <input asp-for="Surname" class="form-control" id="randomSurname" />
                 <span asp-validation-for="Surname" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control"/>
+                <input type="date" asp-for="StartDate" class="form-control" id="randomDate" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="GrossSalary" class="control-label"></label>
-                <input asp-for="GrossSalary" class="form-control" />
+                <input asp-for="GrossSalary" class="form-control" id="randomGrossSalary" />
                 <span asp-validation-for="GrossSalary" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="NetSalary" class="control-label"></label>
-                <input asp-for="NetSalary" class="form-control" />
+                <input asp-for="NetSalary" class="form-control" id="randomNetSalary" />
                 <span asp-validation-for="NetSalary" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DepartmentId" class="control-label">Department</label>
-                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId"></select>
+                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId" id="randomDepartmentId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

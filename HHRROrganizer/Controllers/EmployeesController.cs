@@ -68,15 +68,27 @@ namespace HHRROrganizer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Picture,StartDate,GrossSalary,NetSalary,DepartmentId")] Employees employees, List<IFormFile> postedFiles)
+        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Picture,StartDate,GrossSalary,NetSalary,DepartmentId")] Employees employees, List<IFormFile> postedFiles, string boolPicture, string randomPicture)
         {
+            //Due to the random user generator, we must generate a bool that tells us if we enter the user randomly (by pressing the Fill Random User button), or manually (using the button to search for a local image).
+           
             if (ModelState.IsValid)
             {
                 var exist = await _context.Employees.Where(e => e.Name == employees.Name && e.Surname == employees.Surname).FirstOrDefaultAsync();
                 if (exist == null)
                 {
-                    _context.Add(employees);
-                    UploadProfilePic(postedFiles, employees);
+                    
+                    if (boolPicture == "True")
+                    {
+                        employees.Picture = randomPicture;
+                        _context.Add(employees);
+                    }
+                    else if (boolPicture == "False")
+                    {
+                        _context.Add(employees);
+                        UploadProfilePic(postedFiles, employees);
+                    }
+                   
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -88,6 +100,7 @@ namespace HHRROrganizer.Controllers
             }
             ViewData["DepartmentId"] = new SelectList(_context.Set<Department>(), "Id", "Name", employees.DepartmentId);
             return View(employees);
+
         }
 
         // GET: Employees/Edit/5
@@ -187,6 +200,7 @@ namespace HHRROrganizer.Controllers
         [HttpPost]
         public void UploadProfilePic(List<IFormFile> postedFiles, Employees employees)
         {
+
             string wwwPath = this._environment.WebRootPath;
 
             string path = Path.Combine(wwwPath, "pictures");
@@ -207,6 +221,8 @@ namespace HHRROrganizer.Controllers
                     ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", fileName);
                 }
             }
+
+
         }
 
         //Employee finder, by name, salary or department

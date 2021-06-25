@@ -10,6 +10,7 @@
 {
     <p>
         <a asp-action="Create">Create New Employee</a>
+    <p class="TextFadeEffect">PRUEBA EJEMPLO</p>
     </p>
     <div class="forms">
         <form asp-action="Index">
@@ -18,21 +19,21 @@
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
         @*The post ModifySalary method is complex, for each search performed in the previous form, we collect the ids of the employees resulting from the search in hidden inputs, to take them later to the BackEnd.
-        UserPercentage collects the value entered by the user, the % of salary to be modified.
-        Then, foreach employee in the filtered model, we create an input of type hidden where to collect the id of each employee resulting from the search, stored in searchlist.*@
-    <form asp-action="ModifySalary" method="post">
-        <input placeholder="-15" name="userPercentage" type="number">
-        @foreach (var item in Model)
-        {
-            <input type="hidden" name="searchList" value="@item.Id" />
-        }
-        <button type="submit">Modify Salary</button>
-        <p class="minExplanation">*Type a percentage (%) to increase/decrease salary in the filtered list:</p>
-        <p class="TextFadeEffect">PRUEBA EJEMPLO</p>
-    </form>
+            UserPercentage collects the value entered by the user, the % of salary to be modified.
+            Then, foreach employee in the filtered model, we create an input of type hidden where to collect the id of each employee resulting from the search, stored in searchlist.*@
+        <form asp-action="ModifySalary" method="post">
+            <input placeholder="-15" name="userPercentage" type="number">
+            @foreach (var item in Model)
+            {
+                <input type="hidden" name="searchList" value="@item.Id" />
+            }
+            <button type="submit">Modify Salary</button>
+            <p class="minExplanation">*Type a percentage (%) to increase/decrease salary in the filtered list:</p>
+
+        </form>
     </div>
-    
-    
+
+
 }
 
 
@@ -72,9 +73,18 @@
     <tbody>
         @foreach (var item in Model)
         {
+
+
             <tr class="employeeInfoRow">
                 <td>
-                    <img src="~/pictures/@item.Picture" alt="" class="employeePicture" />
+                    @if (item.Picture.Contains("http"))
+                    {
+                        <img src="@item.Picture" alt="" class="employeePicture" />
+                    }
+                    else
+                    {
+                        <img src="~/pictures/@item.Picture" alt="" class="employeePicture" />
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
@@ -85,10 +95,10 @@
                 <td>
                     @item.StartDate.ToShortDateString()
                 </td>
-                <td class="TextFadeEffect">
+                <td>
                     @Html.DisplayFor(modelItem => item.GrossSalary)
                 </td>
-                <td class="TextFadeEffect">
+                <td>
                     @Html.DisplayFor(modelItem => item.NetSalary)
                 </td>
                 <td>
