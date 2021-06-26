@@ -18,7 +18,7 @@
 <h1>Create</h1>
 <div class="createEmployeeHeader">
     <h4>Employees</h4>
-    <input type="submit" id="randomGeneratorInput" class="btn btn-secondary" value="Fill with random user" />
+    <input type="button" id="randomGeneratorInput" class="btn btn-secondary" value="Fill with random user" data-toggle="tooltip" data-placement="bottom" title="This button fills fields randomly with 'RandomUserAPI', to create random employees faster and explore how this demo works. But you can create your employee manually.">
 </div>
 
 
@@ -29,7 +29,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @*Here, I set a boolean that I change to value=true through js if the Fill Random user button is pressed, this way, the Create method is called in a different way, generating the user in a random way.*@
             <input type="hidden" name="boolPicture" id="boolPicture" value="False" />
-           
+
             <div class="form-group" id="createEmployeeManually">
                 <label asp-for="Picture">Upload a profile picture</label>
                 <input type="file" accept="image/* " class="form-control-file" name="postedFiles">
@@ -78,5 +78,8 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+
