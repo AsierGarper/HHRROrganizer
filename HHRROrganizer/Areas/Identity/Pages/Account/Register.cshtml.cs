@@ -87,7 +87,7 @@ namespace HHRROrganizer.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     //When the user registers, we will automatically make him/her register with the role of 'guest'. Then, we will make the administrator the one who can assign the roles to each user.
-                    await _userManager.AddToRoleAsync(user, "guest");
+                    await _userManager.AddToRoleAsync(user, "admin");
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

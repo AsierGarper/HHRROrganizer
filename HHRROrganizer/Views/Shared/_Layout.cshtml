@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HHRR Organizer</title>
+    <title>@ViewData["Title"] - OrganiTeam</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
@@ -14,7 +14,8 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HHRROrganizer</a>
+                <img class="gifLogo" src="~/pictures/LogoOrganiTeam.gif" />
+                <a class="navbar-brand logoTitle" asp-area="" asp-controller="Home" asp-action="Index">OrganiTeam</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -49,12 +50,13 @@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+            @*<img id="backgroundPic" src="~/pictures/backOrganiTeam.gif" />*@
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - HHRROrganizer - <a asp-area="" asp-controller="Home" asp-action="Privacy">Manual de usuario</a>
+            &copy; 2021 - OrganiTeam - <a asp-area="" asp-controller="Home" asp-action="Privacy">Manual de usuario</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -64,3 +66,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

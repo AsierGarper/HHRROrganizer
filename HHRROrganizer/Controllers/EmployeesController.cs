@@ -242,7 +242,7 @@ namespace HHRROrganizer.Controllers
             //If the user searches by name, leaving the department box empty
             else if (!String.IsNullOrEmpty(nameSearch) && String.IsNullOrEmpty(departmentSearch))
             {
-                var applicationDbContext = _context.Employees.Where(e => e.Name.Contains(nameSearch));
+                var applicationDbContext = _context.Employees.Include(e => e.Department).Where(e => e.Name.Contains(nameSearch));
                 return View(await applicationDbContext.ToListAsync());
             }
             // If none of the fields are empty when the search engine is activated

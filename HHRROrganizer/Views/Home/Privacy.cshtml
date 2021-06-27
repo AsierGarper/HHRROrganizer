@@ -2,14 +2,21 @@
     ViewData["Title"] = "User Manual";
 }
 <h1>Manual de usuario</h1>
+<div class="userManualSection">
+    <img class="userManualPic" src="~/pictures/userManualPic.png" />
+    <div>
+        <p>
+            Welcome to the demo of OrganiTeam, an application developed by Asier García Pérez, with the help of his teachers Peio Murguia Lasa and Erlantz Rojo Raño at BBKBootcamp in Bilbao (Vizcaya, Spain). From a very basic point of view, it presents several functionalities of the Model-View-Controller (MVC) offered by ASP.Net, through an employee management application. It employs the Identity API giving the application a user interface (UI) login functionality, and also manages users, passwords, profile data, roles, notifications, tokens, e-mail confirmation, etc.
+            This application also allows you to assign admin, manager and guest roles, which have the following permissions:
+        </p>
 
-<p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, incidunt harum! Odio corporis vitae dolore fugiat consequatur in iure molestiae similique! Veniam fugit fuga exercitationem corporis impedit? Tempore, nam? Dicta. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptate veniam, itaque non quam sunt nemo ullam laudantium reprehenderit. Fuga, odio. Et sunt autem ipsa, animi quasi modi fuga cupiditate dicta. Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem sunt ad modi odit dolor incidunt facere eum, ipsum possimus. Dolore voluptate consectetur quas deserunt in molestias natus vitae laborum adipisci!
-</p>
+        <ul>
+            <li><b>Admin Role:</b> It has permissions to create employees, delete them, increase salary and decrease it. In addition, it has a section available to manage roles of registered users, as well as delete them. You can visualize each of the sections of the application. By default, if you log in to the application you will be granted this role.
+<li><b>Rol Manager:</b> You have permissions to view the different departments, but you cannot create new ones. You can edit employees, and view their details, but you cannot delete them. You cannot increase or decrease their salary. You also do not have the option to modify user permissions.</li>
+            <li><b>Role Guest:</b> You have permissions to view the list of employees, as well as departments. It does not have access to the rest of the functionalities.
+        </ul>
 
-<ul>
-    <li><b>Rol Admin:</b> Tiene permisos de crear empleados, eliminarlos, aumentar salario y disminuirlo. Ademas, tiene una seccion disponible para administrar roles de usuarios registrados, asi como eliminarlos. Puede visualizar toda seccion de la aplicacion.</li>
-    <li><b>Rol Manager:</b> Tiene permisos para ver los diferentes departamentos, pero no puede crear nuevos. Puede editar empleados, eliminarlos y crearlos desde cero. Pero no puede ni aumentar o disminuir su sueldo. Tampoco tiene disponible la opcion de modificar permisos de usuario</li>
-    <li><b>Rol Guest:</b> Tiene permisos para ver el listado de empleados, asi como de departamentos.</li>
+        <p>Take a look at the <u>README.md file</u> to obtain more information on how to install the application, through simple steps.</p>
+    </div>
+</div>
 
-</ul>

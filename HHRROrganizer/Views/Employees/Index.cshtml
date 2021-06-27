@@ -20,16 +20,17 @@
         @*The post ModifySalary method is complex, for each search performed in the previous form, we collect the ids of the employees resulting from the search in hidden inputs, to take them later to the BackEnd.
             UserPercentage collects the value entered by the user, the % of salary to be modified.
             Then, foreach employee in the filtered model, we create an input of type hidden where to collect the id of each employee resulting from the search, stored in searchlist.*@
-        <form asp-action="ModifySalary" method="post">
-            <input placeholder="-15" name="userPercentage" type="number">
-            @foreach (var item in Model)
-            {
-                <input type="hidden" name="searchList" value="@item.Id" />
-            }
-            <button type="submit">Modify Salary</button>
-            <p class="minExplanation">*Type a percentage (%) to increase/decrease salary in the filtered list:</p>
+    <form asp-action="ModifySalary" method="post">
+        <input placeholder="-15" name="userPercentage" type="number" data-toggle="tooltip" data-placement="left" title="Type a positive or negative number to increase or decrease the salary of each filtered user respectively. Attention, if the filtering is not executed, the salary of all visible employees will be modified.">
+        @foreach (var item in Model)
+        {
+            <input type="hidden" name="searchList" value="@item.Id" />
+        }
+        <button type="submit">Modify Salary %</button>
 
-        </form>
+        <p class="minExplanation">*Type a percentage (%) to increase/decrease salary in the filtered list:</p>
+
+    </form>
     </div>
 
 
