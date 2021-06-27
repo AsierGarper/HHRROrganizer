@@ -51,6 +51,9 @@ body {
     vertical-align: middle;
 }
 
+input, button{
+    border-radius:5px;
+}
 
 .minExplanation {
     font-size: 10px;
